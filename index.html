@@ -9,8 +9,7 @@
 <body>
     <div class="container">
         <h2>Breakdown Log - Department 705</h2>
-        <input type="text" id="search-bar" placeholder="Search breakdowns...">
-
+    
         <form id="breakdown-form">
             <label for="date">Date:</label>
             <input type="date" id="date" required>
@@ -38,11 +37,17 @@
 
             <label for="action">Action Taken:</label>
             <textarea id="action" rows="3" placeholder="Describe action taken" required></textarea>
+                  
+            <label for="spare">Spare Part Used:</label>
+            <textarea id="spare" rows="3" placeholder="Spare Part Used" required></textarea>
 
             <label for="downtime">Downtime (hours and minutes):</label>
             <input type="text" id="downtime" placeholder="Enter downtime (e.g., 2 hours 30 minutes)" required>
 
             <button type="submit" class="btn">Add Breakdown</button>
+                
+            <input type="text" id="search-bar" placeholder="Search breakdowns...">
+
         </form>
 
         <hr>
