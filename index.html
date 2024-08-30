@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Department 705 - Breakdown Log</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Breakdown Log - Department 705</h2>
+        <input type="text" id="search-bar" placeholder="Search breakdowns...">
+
+        <form id="breakdown-form">
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+            
+            <label for="department">Department:</label>
+            <select id="department" required>
+                <option value="Sandak">Sandak</option>
+                <option value="Kingsteel">Kingsteel</option>
+                <option value="ABU">ABU</option>
+                <option value="Tannery">Tannery</option>
+                <option value="Leather">Leather</option>
+                <option value="DIP-Canvas">DIP-Canvas</option>
+                <option value="Thongs">Thongs</option>
+                <option value="Paletizing">Paletizing</option>
+            </select>
+
+            <label for="engineer">Technician/Engineer Name:</label>
+            <input type="text" id="engineer" placeholder="Enter name" required>
+
+            <label for="machine">Machine Name:</label>
+            <input type="text" id="machine" placeholder="Enter machine name" required>
+
+            <label for="description">Description of Breakdown:</label>
+            <textarea id="description" rows="3" placeholder="Describe the breakdown" required></textarea>
+
+            <label for="action">Action Taken:</label>
+            <textarea id="action" rows="3" placeholder="Describe action taken" required></textarea>
+
+            <label for="downtime">Downtime (hours and minutes):</label>
+            <input type="text" id="downtime" placeholder="Enter downtime (e.g., 2 hours 30 minutes)" required>
+
+            <button type="submit" class="btn">Add Breakdown</button>
+        </form>
+
+        <hr>
+
+        <div id="breakdown-list"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
