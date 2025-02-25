@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Machine Stoppage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* CSS styles for the machine stoppage page */
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #00aaff;
+      margin: 0;
+      font-size: 2em;
+    }
+    section {
+      background: #2b2b2b;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      text-align: left;
+    }
+    button {
+      padding: 8px;
+      background-color: #00aaff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0088cc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Machine Stoppage</h1>
+    <button id="logoutBtn">Logout</button>
+  </header>
+
+  <!-- 1st Shift: 07:30 - 15:30 -->
+  <section id="shift1">
+    <h2>1st Shift (07:30 - 15:30)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Technician</th>
+          <th>Reason</th>
+          <th>MTTR</th>
+        </tr>
+      </thead>
+      <tbody id="shift1Body">
+        <!-- 1st shift entries will be inserted here -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 2nd Shift: 15:30 - 23:30 -->
+  <section id="shift2">
+    <h2>2nd Shift (15:30 - 23:30)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Technician</th>
+          <th>Reason</th>
+          <th>MTTR</th>
+        </tr>
+      </thead>
+      <tbody id="shift2Body">
+        <!-- 2nd shift entries will be inserted here -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 3rd Shift: 23:30 - 07:30 -->
+  <section id="shift3">
+    <h2>3rd Shift (23:30 - 07:30)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Technician</th>
+          <th>Reason</th>
+          <th>MTTR</th>
+        </tr>
+      </thead>
+      <tbody id="shift3Body">
+        <!-- 3rd shift entries will be inserted here -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Firebase and Application Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    // Redirect to index.html if not logged in
+    if (localStorage.getItem("machineStoppageLoggedIn") !== "true") {
+      window.location.href = "index.html";
+    }
+
+    // Replace with your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC11Fdf67z47Ox64_RqQ1vwgwdQRZf2dvI",
+      authDomain: "dept705.firebaseapp.com",
+      projectId: "dept705",
+      storageBucket: "dept705.firebasestorage.app",
+      messagingSenderId: "333873965527",
+      appId: "1:333873965527:web:0efce8b2c56bf682cdc392"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const logsCollection = collection(db, "breakdownLogs");
+
+    // Helper: Convert "HH:MM" to minutes since midnight
+    function timeToMinutes(timeStr) {
+      const [hours, minutes] = timeStr.split(":").map(Number);
+      return hours * 60 + minutes;
+    }
+
+    // Helper: Format minutes into HH:MM
+    function formatMinutes(minutes) {
+      const hrs = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
+    }
+
+    // Compute MTTR (difference between start and end times)
+    function computeMTTR(start, end) {
+      let startMins = timeToMinutes(start);
+      let endMins = timeToMinutes(end);
+      if (endMins < startMins) {
+        // Account for overnight (end time on next day)
+        endMins += 24 * 60;
+      }
+      return formatMinutes(endMins - startMins);
+    }
+
+    // Render machine stoppage tables per shift
+    function renderStoppage() {
+      document.getElementById("shift1Body").innerHTML = "";
+      document.getElementById("shift2Body").innerHTML = "";
+      document.getElementById("shift3Body").innerHTML = "";
+
+      const q = query(logsCollection, orderBy("timestamp", "desc"));
+      onSnapshot(q, (snapshot) => {
+        // Clear table bodies on each update
+        document.getElementById("shift1Body").innerHTML = "";
+        document.getElementById("shift2Body").innerHTML = "";
+        document.getElementById("shift3Body").innerHTML = "";
+
+        snapshot.forEach((docSnap) => {
+          const log = docSnap.data();
+          // Determine shift based on startTime (in minutes)
+          const startMins = timeToMinutes(log.startTime);
+          let shift;
+          // 1st shift: 07:30 (450 mins) to 15:30 (930 mins)
+          if (startMins >= 450 && startMins < 930) {
+            shift = 1;
+          }
+          // 2nd shift: 15:30 (930 mins) to 23:30 (1410 mins)
+          else if (startMins >= 930 && startMins < 1410) {
+            shift = 2;
+          }
+          // 3rd shift: 23:30 to 07:30
+          else {
+            shift = 3;
+          }
+          const mttr = computeMTTR(log.startTime, log.endTime);
+          const row = `<tr>
+                        <td>${log.startTime}</td>
+                        <td>${log.endTime}</td>
+                        <td>${log.technician}</td>
+                        <td>${log.reason}</td>
+                        <td>${mttr}</td>
+                      </tr>`;
+          if (shift === 1) {
+            document.getElementById("shift1Body").innerHTML += row;
+          } else if (shift === 2) {
+            document.getElementById("shift2Body").innerHTML += row;
+          } else if (shift === 3) {
+            document.getElementById("shift3Body").innerHTML += row;
+          }
+        });
+      });
+    }
+    renderStoppage();
+
+    // Logout: clear login flag and redirect to index.html
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("machineStoppageLoggedIn");
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
