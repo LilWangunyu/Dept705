@@ -4,127 +4,126 @@
   <meta charset="UTF-8">
   <title>Machine Stoppage</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Link to external stylesheet -->
+  <link rel="stylesheet" href="style.css">
   <style>
-    /* CSS styles for the machine stoppage page */
-    body {
-      font-family: Arial, sans-serif;
-      background: #1e1e1e;
-      color: #e0e0e0;
-      margin: 0;
-      padding: 20px;
+    /* Inline styles for toggle behavior */
+    .hidden-row {
+      display: none;
     }
-    header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    h1 {
-      color: #00aaff;
-      margin: 0;
-      font-size: 2em;
-    }
-    section {
-      background: #2b2b2b;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #444;
-      text-align: left;
-    }
-    button {
-      padding: 8px;
+    .toggle-btn {
+      margin: 10px 0;
       background-color: #00aaff;
       color: white;
       border: none;
+      padding: 8px;
       border-radius: 4px;
       cursor: pointer;
-    }
-    button:hover {
-      background-color: #0088cc;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Machine Stoppage</h1>
+    <!-- Logout and Download PDF Buttons -->
     <button id="logoutBtn">Logout</button>
+    <button id="downloadPdf">Download PDF</button>
   </header>
 
-  <!-- 1st Shift: 07:30 - 15:30 -->
-  <section id="shift1">
-    <h2>1st Shift (07:30 - 15:30)</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Start Time</th>
-          <th>End Time</th>
-          <th>Technician</th>
-          <th>Reason</th>
-          <th>MTTR</th>
-        </tr>
-      </thead>
-      <tbody id="shift1Body">
-        <!-- 1st shift entries will be inserted here -->
-      </tbody>
-    </table>
+  <!-- Date Range Filter Section -->
+  <section id="dateFilter">
+    <h2>Filter by Date Range</h2>
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate">
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate">
+    <button id="applyDateFilter">Apply Filter</button>
+    <button id="clearDateFilter">Clear Filter</button>
   </section>
 
-  <!-- 2nd Shift: 15:30 - 23:30 -->
-  <section id="shift2">
-    <h2>2nd Shift (15:30 - 23:30)</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Start Time</th>
-          <th>End Time</th>
-          <th>Technician</th>
-          <th>Reason</th>
-          <th>MTTR</th>
-        </tr>
-      </thead>
-      <tbody id="shift2Body">
-        <!-- 2nd shift entries will be inserted here -->
-      </tbody>
-    </table>
-  </section>
+  <!-- Container for stoppage data (PDF conversion will use this container) -->
+  <div id="stoppageData">
+    <!-- 1st Shift: 07:30 - 15:30 -->
+    <section id="shift1Section">
+      <h2>1st Shift (07:30 - 15:30)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Technician</th>
+            <th>Reason</th>
+            <th>MTTR</th>
+          </tr>
+        </thead>
+        <tbody id="shift1Body">
+          <!-- Rows will be inserted here -->
+        </tbody>
+      </table>
+      <div id="toggleShift1Container"></div>
+    </section>
 
-  <!-- 3rd Shift: 23:30 - 07:30 -->
-  <section id="shift3">
-    <h2>3rd Shift (23:30 - 07:30)</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Start Time</th>
-          <th>End Time</th>
-          <th>Technician</th>
-          <th>Reason</th>
-          <th>MTTR</th>
-        </tr>
-      </thead>
-      <tbody id="shift3Body">
-        <!-- 3rd shift entries will be inserted here -->
-      </tbody>
-    </table>
-  </section>
+    <!-- 2nd Shift: 15:30 - 23:30 -->
+    <section id="shift2Section">
+      <h2>2nd Shift (15:30 - 23:30)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Technician</th>
+            <th>Reason</th>
+            <th>MTTR</th>
+          </tr>
+        </thead>
+        <tbody id="shift2Body">
+          <!-- Rows will be inserted here -->
+        </tbody>
+      </table>
+      <div id="toggleShift2Container"></div>
+    </section>
 
-  <!-- Firebase and Application Scripts -->
+    <!-- 3rd Shift: 23:30 - 07:30 -->
+    <section id="shift3Section">
+      <h2>3rd Shift (23:30 - 07:30)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Technician</th>
+            <th>Reason</th>
+            <th>MTTR</th>
+          </tr>
+        </thead>
+        <tbody id="shift3Body">
+          <!-- Rows will be inserted here -->
+        </tbody>
+      </table>
+      <div id="toggleShift3Container"></div>
+    </section>
+  </div>
+
+  <!-- Include html2pdf library from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
+  <!-- Application Script: Firebase, Data Subscription, Filtering, and UI Controls -->
   <script type="module">
+    /********* Firebase & Firestore Initialization *********/
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      orderBy,
+      onSnapshot,
+      where
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-    // Redirect to index.html if not logged in
-    if (localStorage.getItem("machineStoppageLoggedIn") !== "true") {
-      window.location.href = "index.html";
-    }
-
-    // Replace with your Firebase configuration
+    // Replace the values below with your Firebase configuration.
     const firebaseConfig = {
       apiKey: "AIzaSyC11Fdf67z47Ox64_RqQ1vwgwdQRZf2dvI",
       authDomain: "dept705.firebaseapp.com",
@@ -134,66 +133,116 @@
       appId: "1:333873965527:web:0efce8b2c56bf682cdc392"
     };
 
+    // Initialize Firebase and Firestore.
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const logsCollection = collection(db, "breakdownLogs");
 
-    // Helper: Convert "HH:MM" to minutes since midnight
+    /********* Utility Functions *********/
+    // Converts a "HH:MM" string into minutes since midnight.
     function timeToMinutes(timeStr) {
       const [hours, minutes] = timeStr.split(":").map(Number);
       return hours * 60 + minutes;
     }
 
-    // Helper: Format minutes into HH:MM
+    // Formats minutes (number) back into a "HH:MM" string.
     function formatMinutes(minutes) {
       const hrs = Math.floor(minutes / 60);
       const mins = minutes % 60;
       return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
     }
 
-    // Compute MTTR (difference between start and end times)
+    // Compute MTTR (repair time) as the difference between start and end times.
     function computeMTTR(start, end) {
       let startMins = timeToMinutes(start);
       let endMins = timeToMinutes(end);
       if (endMins < startMins) {
-        // Account for overnight (end time on next day)
+        // Account for repair times that cross midnight.
         endMins += 24 * 60;
       }
       return formatMinutes(endMins - startMins);
     }
 
-    // Render machine stoppage tables per shift
-    function renderStoppage() {
-      document.getElementById("shift1Body").innerHTML = "";
-      document.getElementById("shift2Body").innerHTML = "";
-      document.getElementById("shift3Body").innerHTML = "";
+    /********* Collapse/Expand Functionality *********/
+    function applyCollapse(tbodyId, toggleContainerId) {
+      const tbody = document.getElementById(tbodyId);
+      const rows = tbody.querySelectorAll("tr");
+      const toggleContainer = document.getElementById(toggleContainerId);
+      
+      // Remove any existing toggle button.
+      toggleContainer.innerHTML = "";
 
-      const q = query(logsCollection, orderBy("timestamp", "desc"));
-      onSnapshot(q, (snapshot) => {
-        // Clear table bodies on each update
-        document.getElementById("shift1Body").innerHTML = "";
-        document.getElementById("shift2Body").innerHTML = "";
-        document.getElementById("shift3Body").innerHTML = "";
+      if (rows.length > 3) {
+        // Hide rows beyond the first three.
+        for (let i = 3; i < rows.length; i++) {
+          rows[i].classList.add("hidden-row");
+          rows[i].style.display = "none";
+        }
+        // Create the toggle button.
+        const btn = document.createElement("button");
+        btn.textContent = "Show more";
+        btn.classList.add("toggle-btn");
+        btn.addEventListener("click", () => {
+          const hiddenRows = tbody.querySelectorAll("tr.hidden-row");
+          if (hiddenRows.length > 0 && hiddenRows[0].style.display === "none") {
+            hiddenRows.forEach(row => row.style.display = "");
+            btn.textContent = "Show less";
+          } else {
+            hiddenRows.forEach(row => row.style.display = "none");
+            btn.textContent = "Show more";
+          }
+        });
+        toggleContainer.appendChild(btn);
+      }
+    }
+
+    /********* Firestore Subscription for Machine Stoppage Data *********/
+    // Global variable for our snapshot unsubscribe function.
+    window.unsubscribeStoppage = null;
+
+    // subscribeStoppage accepts optional start and end timestamps for date filtering.
+    function subscribeStoppage(startTimestamp, endTimestamp) {
+      // Unsubscribe from any previous listener.
+      if (window.unsubscribeStoppage) {
+        window.unsubscribeStoppage();
+      }
+      
+      let q;
+      if (startTimestamp && endTimestamp) {
+        // Filter documents by timestamp within the date range.
+        q = query(
+          logsCollection,
+          where("timestamp", ">=", startTimestamp),
+          where("timestamp", "<=", endTimestamp),
+          orderBy("timestamp", "desc")
+        );
+      } else {
+        // No date filter; query all documents.
+        q = query(logsCollection, orderBy("timestamp", "desc"));
+      }
+
+      window.unsubscribeStoppage = onSnapshot(q, (snapshot) => {
+        // Arrays to hold table rows for each shift.
+        let shift1Rows = [];
+        let shift2Rows = [];
+        let shift3Rows = [];
 
         snapshot.forEach((docSnap) => {
           const log = docSnap.data();
-          // Determine shift based on startTime (in minutes)
+          // Determine which shift this breakdown belongs to using the start time.
           const startMins = timeToMinutes(log.startTime);
           let shift;
-          // 1st shift: 07:30 (450 mins) to 15:30 (930 mins)
-          if (startMins >= 450 && startMins < 930) {
+          if (startMins >= 450 && startMins < 930) {         // 07:30 to 15:30
             shift = 1;
-          }
-          // 2nd shift: 15:30 (930 mins) to 23:30 (1410 mins)
-          else if (startMins >= 930 && startMins < 1410) {
+          } else if (startMins >= 930 && startMins < 1410) {   // 15:30 to 23:30
             shift = 2;
-          }
-          // 3rd shift: 23:30 to 07:30
-          else {
+          } else {
             shift = 3;
           }
           const mttr = computeMTTR(log.startTime, log.endTime);
+          // Build the row HTML including the breakdown date.
           const row = `<tr>
+                        <td>${log.date || ""}</td>
                         <td>${log.startTime}</td>
                         <td>${log.endTime}</td>
                         <td>${log.technician}</td>
@@ -201,18 +250,63 @@
                         <td>${mttr}</td>
                       </tr>`;
           if (shift === 1) {
-            document.getElementById("shift1Body").innerHTML += row;
+            shift1Rows.push(row);
           } else if (shift === 2) {
-            document.getElementById("shift2Body").innerHTML += row;
+            shift2Rows.push(row);
           } else if (shift === 3) {
-            document.getElementById("shift3Body").innerHTML += row;
+            shift3Rows.push(row);
           }
         });
+        // Update table bodies.
+        document.getElementById("shift1Body").innerHTML = shift1Rows.join("");
+        document.getElementById("shift2Body").innerHTML = shift2Rows.join("");
+        document.getElementById("shift3Body").innerHTML = shift3Rows.join("");
+
+        // Apply collapse/expand to each table.
+        applyCollapse("shift1Body", "toggleShift1Container");
+        applyCollapse("shift2Body", "toggleShift2Container");
+        applyCollapse("shift3Body", "toggleShift3Container");
       });
     }
-    renderStoppage();
 
-    // Logout: clear login flag and redirect to index.html
+    // Initially subscribe without any date filter.
+    subscribeStoppage();
+
+    /********* Date Range Filter Functionality *********/
+    document.getElementById("applyDateFilter").addEventListener("click", () => {
+      const startDateVal = document.getElementById("startDate").value;
+      const endDateVal = document.getElementById("endDate").value;
+      if (!startDateVal || !endDateVal) {
+        alert("Please select both start and end dates.");
+        return;
+      }
+      // Convert selected dates (YYYY-MM-DD) to timestamps.
+      const startTimestamp = new Date(startDateVal).getTime();
+      // Add nearly one full day to include the full end day.
+      const endTimestamp = new Date(endDateVal).getTime() + (24 * 60 * 60 * 1000) - 1;
+      subscribeStoppage(startTimestamp, endTimestamp);
+    });
+
+    document.getElementById("clearDateFilter").addEventListener("click", () => {
+      document.getElementById("startDate").value = "";
+      document.getElementById("endDate").value = "";
+      subscribeStoppage();
+    });
+
+    /********* PDF Download Functionality *********/
+    document.getElementById("downloadPdf").addEventListener("click", () => {
+      const element = document.getElementById("stoppageData");
+      const opt = {
+        margin: 0.5,
+        filename: 'machine_stoppage.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    });
+
+    /********* Logout Functionality *********/
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.removeItem("machineStoppageLoggedIn");
       window.location.href = "index.html";
