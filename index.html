@@ -4,111 +4,208 @@
   <meta charset="UTF-8">
   <title>dept 705 - Engineering Breakdown Log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Link to your external stylesheet -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+  <!-- External stylesheet can be used if you wish; here we include custom styles inline -->
   <style>
-    /* Additional inline styles for collapsing the log table */
-    .hidden-row {
-      display: none;
+    /* Global Reset and Body */
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #f4f4f4;
+      color: #333;
     }
+    header {
+      background: linear-gradient(135deg, #00aaff, #0066cc);
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+    nav {
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 10px 0;
+    }
+    nav a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 4px;
+    }
+    nav a:hover, nav a.active {
+      background: #00aaff;
+      color: #fff;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    section {
+      background: #fff;
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    /* Form Styles */
+    form input, form select, form button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    form button {
+      background: #00aaff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    form button:hover {
+      background: #0077cc;
+    }
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table th, table td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    /* Toggle Button for Collapsing Table Rows */
     .toggle-btn {
-      background-color: #00aaff;
-      color: white;
+      background: #00aaff;
+      color: #fff;
       border: none;
       padding: 8px;
       border-radius: 4px;
       cursor: pointer;
       margin-top: 10px;
     }
+    .hidden-row {
+      display: none;
+    }
+    /* Login Form Styles */
+    .login-form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .login-form input, .login-form button {
+      margin: 8px 0;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>dept 705 - Engineering Breakdown Log</h1>
-    <p>Record machine breakdowns digitally for real‑time monitoring</p>
+    <p>Bata Shoe Company PLC, Limuru, Kenya</p>
   </header>
+  <nav>
+    <a href="#breakdownLog" id="navBreakdown" class="active">Breakdown Log</a>
+    <a href="#machineStoppageAccess" id="navMachineStoppage">Machine Stoppage Access</a>
+  </nav>
+  <div class="container">
+    <!-- Breakdown Log Section -->
+    <section id="breakdownLog">
+      <h2>Enter Breakdown Details</h2>
+      <form id="breakdownForm">
+        <label for="date">Date of Breakdown:</label>
+        <input type="date" id="date" name="date">
 
-  <!-- Breakdown Entry Form -->
-  <section class="entry-form">
-    <h2>Enter Breakdown Details</h2>
-    <form id="breakdownForm">
-      <label for="date">Date of Breakdown:</label>
-      <input type="date" id="date" name="date">
+        <label for="technician">Technician Name:</label>
+        <input type="text" id="technician" name="technician" placeholder="e.g., John Doe">
 
-      <label for="technician">Technician Name:</label>
-      <input type="text" id="technician" name="technician" placeholder="e.g., John Doe">
+        <label for="machine">Machine Name:</label>
+        <input type="text" id="machine" name="machine" placeholder="e.g., CNC-3000">
 
-      <label for="machine">Machine Name:</label>
-      <input type="text" id="machine" name="machine" placeholder="e.g., CNC-3000">
+        <label for="factory">Factory Location:</label>
+        <select id="factory" name="factory">
+          <option value="">--Select Factory--</option>
+          <option value="Sandak">Sandak</option>
+          <option value="Tannery">Tannery</option>
+          <option value="Leather">Leather</option>
+          <option value="DIP/canvas">DIP/canvas</option>
+          <option value="Thongs">Thongs</option>
+          <option value="Paletizing">Paletizing</option>
+          <option value="Kingsteel">Kingsteel</option>
+        </select>
 
-      <label for="factory">Factory Location:</label>
-      <select id="factory" name="factory">
-        <option value="">--Select Factory--</option>
-        <option value="Sandak">Sandak</option>
-        <option value="Tannery">Tannery</option>
-        <option value="Leather">Leather</option>
-        <option value="DIP/canvas">DIP/canvas</option>
-        <option value="Thongs">Thongs</option>
-        <option value="Paletizing">Paletizing</option>
-        <option value="Kingsteel">Kingsteel</option>
-      </select>
+        <label for="startTime">Start Time:</label>
+        <!-- Using input type="time" with step="1" for precise time selection -->
+        <input type="time" id="startTime" name="startTime" step="1">
 
-      <label for="startTime">Start Time:</label>
-      <!-- Use input type="time" for exact time selection (seconds are allowed) -->
-      <input type="time" id="startTime" name="startTime" step="1">
+        <label for="endTime">End Time:</label>
+        <input type="time" id="endTime" name="endTime" step="1">
 
-      <label for="endTime">End Time:</label>
-      <input type="time" id="endTime" name="endTime" step="1">
+        <label for="reason">Reason for Breakdown:</label>
+        <input type="text" id="reason" name="reason" placeholder="e.g., Overheating">
 
-      <label for="reason">Reason for Breakdown:</label>
-      <input type="text" id="reason" name="reason" placeholder="e.g., Overheating">
+        <button type="submit">Add Breakdown</button>
+      </form>
+      <p style="font-size:0.9em;">* At least 4 fields must be filled in to submit a breakdown entry.</p>
+    </section>
 
-      <button type="submit">Add Breakdown</button>
-    </form>
-    <p style="font-size:0.9em;">* At least 4 fields must be filled in to submit a breakdown entry.</p>
-  </section>
+    <!-- Breakdown Log Table Section -->
+    <section>
+      <h2>Breakdown Log</h2>
+      <input type="text" id="searchBar" placeholder="Search by date, machine, technician, etc.">
+      <div class="factory-filter">
+        <label for="factoryFilter">Filter by Factory:</label>
+        <select id="factoryFilter">
+          <option value="">All Factories</option>
+          <option value="Sandak">Sandak</option>
+          <option value="Tannery">Tannery</option>
+          <option value="Leather">Leather</option>
+          <option value="DIP/canvas">DIP/canvas</option>
+          <option value="Thongs">Thongs</option>
+          <option value="Paletizing">Paletizing</option>
+          <option value="Kingsteel">Kingsteel</option>
+        </select>
+      </div>
+      <table id="logTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Technician</th>
+            <th>Machine</th>
+            <th>Factory</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Reason</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Breakdown entries will be inserted here by the script -->
+        </tbody>
+      </table>
+      <div id="toggleIndexContainer"></div>
+    </section>
 
-  <!-- Search and Filter Section -->
-  <section class="search-section">
-    <h2>Search Breakdowns</h2>
-    <input type="text" id="searchBar" placeholder="Search by date, machine, technician, etc.">
-    <div class="factory-filter">
-      <label for="factoryFilter">Filter by Factory:</label>
-      <select id="factoryFilter">
-        <option value="">All Factories</option>
-        <option value="Sandak">Sandak</option>
-        <option value="Tannery">Tannery</option>
-        <option value="Leather">Leather</option>
-        <option value="DIP/canvas">DIP/canvas</option>
-        <option value="Thongs">Thongs</option>
-        <option value="Paletizing">Paletizing</option>
-        <option value="Kingsteel">Kingsteel</option>
-      </select>
-    </div>
-  </section>
-
-  <!-- Breakdown Log Table -->
-  <section class="log-table">
-    <h2>Breakdown Log</h2>
-    <table id="logTable">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Technician</th>
-          <th>Machine</th>
-          <th>Factory</th>
-          <th>Start Time</th>
-          <th>End Time</th>
-          <th>Reason</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Entries will be inserted here by the script -->
-      </tbody>
-    </table>
-    <div id="toggleIndexContainer"></div>
-  </section>
+    <!-- Machine Stoppage Access Section -->
+    <section id="machineStoppageAccess">
+      <h2>Machine Stoppage Access</h2>
+      <p>Enter the password below to access the machine stoppage data:</p>
+      <form id="loginForm" class="login-form">
+        <input type="password" id="password" name="password" placeholder="Enter password">
+        <button type="submit">Log In</button>
+      </form>
+      <p id="loginMessage" style="color:red;"></p>
+    </section>
+  </div>
 
   <!-- Firebase and Application Scripts -->
   <script type="module">
@@ -116,7 +213,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-    // Replace with your Firebase configuration.
+    // Replace with your actual Firebase configuration.
     const firebaseConfig = {
       apiKey: "AIzaSyC11Fdf67z47Ox64_RqQ1vwgwdQRZf2dvI",
       authDomain: "dept705.firebaseapp.com",
@@ -131,8 +228,7 @@
     const db = getFirestore(app);
     const logsCollection = collection(db, "breakdownLogs");
 
-    // Render breakdown logs in the table with real-time updates,
-    // but collapse older entries (show only newest 3 by default).
+    // Render breakdown logs in real time with newest three visible by default.
     function renderLogs() {
       const searchQuery = document.getElementById('searchBar').value.toLowerCase();
       const factoryFilter = document.getElementById('factoryFilter').value;
@@ -158,13 +254,9 @@
                       <td><button class="delete-btn" data-id="${log.id}">Delete</button></td>
                      </tr>`);
         });
-
-        // Show only the newest 3 entries by default.
         const visibleRows = rows.slice(0, 3);
         const hiddenRows = rows.slice(3);
         tbody.innerHTML = visibleRows.join("");
-
-        // Create or clear the toggle button.
         const toggleContainer = document.getElementById("toggleIndexContainer");
         toggleContainer.innerHTML = "";
         if (hiddenRows.length > 0) {
@@ -186,7 +278,7 @@
     }
     renderLogs();
 
-    // Handle breakdown entry form submission.
+    // Breakdown form submission.
     document.getElementById('breakdownForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const date = document.getElementById('date').value.trim();
@@ -197,13 +289,11 @@
       const endTime = document.getElementById('endTime').value;
       const reason = document.getElementById('reason').value.trim();
 
-      // Require at least 4 fields.
       const filledCount = [date, technician, machine, factory, startTime, endTime, reason].filter(val => val !== "").length;
       if (filledCount < 4) {
         alert("Please fill in at least 4 fields to submit a breakdown entry.");
         return;
       }
-
       try {
         await addDoc(logsCollection, {
           date,
@@ -213,7 +303,7 @@
           startTime,
           endTime,
           reason,
-          timestamp: Date.now() // You could also use serverTimestamp() if preferred.
+          timestamp: Date.now() // You may switch to serverTimestamp() if desired.
         });
         document.getElementById("breakdownForm").reset();
       } catch (error) {
@@ -221,7 +311,7 @@
       }
     });
 
-    // Handle deletion of a breakdown entry.
+    // Delete a breakdown entry.
     document.querySelector("#logTable tbody").addEventListener("click", async (e) => {
       if (e.target.classList.contains("delete-btn")) {
         const id = e.target.getAttribute("data-id");
@@ -233,9 +323,38 @@
       }
     });
 
-    // Update the log table when search text or factory filter changes.
+    // Update log table on search/filter changes.
     document.getElementById("searchBar").addEventListener("input", renderLogs);
     document.getElementById("factoryFilter").addEventListener("change", renderLogs);
+
+    // Simple Tab Navigation.
+    document.getElementById("navBreakdown").addEventListener("click", () => {
+      document.getElementById("breakdownLog").style.display = "block";
+      document.querySelector("section:nth-of-type(2)").style.display = "block";
+      document.getElementById("machineStoppageAccess").style.display = "none";
+      document.getElementById("navBreakdown").classList.add("active");
+      document.getElementById("navMachineStoppage").classList.remove("active");
+    });
+    document.getElementById("navMachineStoppage").addEventListener("click", () => {
+      document.getElementById("breakdownLog").style.display = "none";
+      document.querySelector("section:nth-of-type(2)").style.display = "none";
+      document.getElementById("machineStoppageAccess").style.display = "block";
+      document.getElementById("navMachineStoppage").classList.add("active");
+      document.getElementById("navBreakdown").classList.remove("active");
+    });
+
+    // Machine Stoppage Access Login.
+    const correctPassword = "admin705";
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const enteredPassword = document.getElementById("password").value;
+      if (enteredPassword === correctPassword) {
+        localStorage.setItem("machineStoppageLoggedIn", "true");
+        window.location.href = "machine-stoppage.html";
+      } else {
+        document.getElementById("loginMessage").textContent = "Incorrect password. Please try again.";
+      }
+    });
   </script>
 </body>
 </html>
