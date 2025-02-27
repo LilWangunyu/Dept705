@@ -4,31 +4,104 @@
   <meta charset="UTF-8">
   <title>Machine Stoppage</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Link to external stylesheet -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
   <style>
-    /* Inline styles for collapsible shift sections */
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #00aaff, #0066cc);
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    section {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
     .toggle-btn {
-      background-color: #00aaff;
-      color: white;
+      background: #00aaff;
+      color: #fff;
       border: none;
-      padding: 5px 10px;
+      padding: 8px 12px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 0.9em;
       margin-left: 10px;
     }
-    /* The content (table) for each shift is hidden by default */
     .shift-content {
       display: none;
+      margin-top: 10px;
     }
-    /* Force all collapsible sections to display when printing */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table th, table td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    .btn-container {
+      text-align: right;
+    }
+    button.download-btn, button.logout-btn {
+      background: #00aaff;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button.download-btn:hover, button.logout-btn:hover {
+      background: #0077cc;
+    }
+    .date-filter {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .date-filter input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .date-filter button {
+      padding: 8px 12px;
+      border: none;
+      background: #00aaff;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .date-filter button:hover {
+      background: #0077cc;
+    }
     @media print {
+      .toggle-btn, .download-btn, .logout-btn, .date-filter {
+        display: none;
+      }
       .shift-content {
          display: block !important;
-      }
-      .toggle-btn {
-         display: none;
       }
     }
   </style>
@@ -36,25 +109,25 @@
 <body>
   <header>
     <h1>Machine Stoppage</h1>
-    <!-- Logout and PDF Download Buttons -->
-    <button id="logoutBtn">Logout</button>
-    <button id="downloadPdf">Download PDF</button>
+    <p>Engineering Department - Bata Shoe Company PLC</p>
   </header>
-
-  <!-- Date Range Filter Section -->
-  <section id="dateFilter">
-    <h2>Filter by Date Range</h2>
-    <label for="startDate">Start Date:</label>
-    <input type="date" id="startDate">
-    <label for="endDate">End Date:</label>
-    <input type="date" id="endDate">
-    <button id="applyDateFilter">Apply Filter</button>
-    <button id="clearDateFilter">Clear Filter</button>
-  </section>
-
-  <!-- Container for stoppage data (used also for PDF conversion) -->
-  <div id="stoppageData">
-    <!-- 1st Shift Section -->
+  <div class="container">
+    <div class="btn-container">
+      <button class="download-btn" id="downloadPdf">Download PDF</button>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+    <!-- Date Range Filter -->
+    <section>
+      <div class="date-filter">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate">
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate">
+        <button id="applyDateFilter">Apply Filter</button>
+        <button id="clearDateFilter">Clear Filter</button>
+      </div>
+    </section>
+    <!-- Shift Sections -->
     <section id="shift1Section">
       <h2>
         1st Shift (07:30 - 15:30)
@@ -75,14 +148,10 @@
               <th>Avg MTTR</th>
             </tr>
           </thead>
-          <tbody id="shift1Body">
-            <!-- Rows for 1st shift will be inserted here -->
-          </tbody>
+          <tbody id="shift1Body"></tbody>
         </table>
       </div>
     </section>
-
-    <!-- 2nd Shift Section -->
     <section id="shift2Section">
       <h2>
         2nd Shift (15:30 - 23:30)
@@ -103,14 +172,10 @@
               <th>Avg MTTR</th>
             </tr>
           </thead>
-          <tbody id="shift2Body">
-            <!-- Rows for 2nd shift will be inserted here -->
-          </tbody>
+          <tbody id="shift2Body"></tbody>
         </table>
       </div>
     </section>
-
-    <!-- 3rd Shift Section -->
     <section id="shift3Section">
       <h2>
         3rd Shift (23:30 - 07:30)
@@ -131,9 +196,7 @@
               <th>Avg MTTR</th>
             </tr>
           </thead>
-          <tbody id="shift3Body">
-            <!-- Rows for 3rd shift will be inserted here -->
-          </tbody>
+          <tbody id="shift3Body"></tbody>
         </table>
       </div>
     </section>
@@ -141,10 +204,7 @@
 
   <!-- Include html2pdf library from CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-
-  <!-- Application Script -->
   <script type="module">
-    /********* Firebase & Firestore Initialization *********/
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import {
       getFirestore,
@@ -155,7 +215,6 @@
       where
     } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-    // Replace these with your actual Firebase project configuration values.
     const firebaseConfig = {
       apiKey: "AIzaSyC11Fdf67z47Ox64_RqQ1vwgwdQRZf2dvI",
       authDomain: "dept705.firebaseapp.com",
@@ -169,21 +228,18 @@
     const db = getFirestore(app);
     const logsCollection = collection(db, "breakdownLogs");
 
-    /********* Utility Functions *********/
-    // Convert "HH:MM" to minutes since midnight.
     function timeToMinutes(timeStr) {
-      const [hours, minutes] = timeStr.split(":").map(Number);
-      return hours * 60 + minutes;
+      const parts = timeStr.split(":").map(Number);
+      // Support seconds if provided.
+      return parts[0] * 60 + parts[1] + (parts[2] ? parts[2] / 60 : 0);
     }
 
-    // Format minutes as "HH:MM".
     function formatMinutes(minutes) {
       const hrs = Math.floor(minutes / 60);
       const mins = Math.round(minutes % 60);
       return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
     }
 
-    // Compute repair time (in minutes) for an individual breakdown.
     function computeRepairTimeMinutes(start, end) {
       let startMins = timeToMinutes(start);
       let endMins = timeToMinutes(end);
@@ -193,7 +249,6 @@
       return endMins - startMins;
     }
 
-    // Compute the average MTTR (as a formatted string) for an array of breakdown logs.
     function averageMTTR(logs) {
       if (logs.length === 0) return "";
       let total = 0;
@@ -204,7 +259,6 @@
       return formatMinutes(avg);
     }
 
-    // Format a timestamp (which may be a Firestore Timestamp or a number) to a locale string.
     function formatTimestamp(ts) {
       if (!ts) return "";
       if (typeof ts === "object" && ts.toDate) {
@@ -213,19 +267,14 @@
       return new Date(ts).toLocaleString();
     }
 
-    // Determine shift based on start time.
     function determineShift(startTime) {
       const mins = timeToMinutes(startTime);
-      if (mins >= 450 && mins < 930) return 1;      // 07:30 - 15:30
-      if (mins >= 930 && mins < 1410) return 2;      // 15:30 - 23:30
-      return 3;                                    // Otherwise, 3rd shift
+      if (mins >= 450 && mins < 930) return 1;
+      if (mins >= 930 && mins < 1410) return 2;
+      return 3;
     }
 
-    /********* Firestore Subscription & Grouping *********/
-    // Global variable for unsubscribing from Firestore updates.
     window.unsubscribeStoppage = null;
-
-    // subscribeStoppage applies an optional date range filter (based on the "timestamp" field).
     function subscribeStoppage(startTimestamp, endTimestamp) {
       if (window.unsubscribeStoppage) {
         window.unsubscribeStoppage();
@@ -244,7 +293,6 @@
       }
 
       window.unsubscribeStoppage = onSnapshot(q, (snapshot) => {
-        // Group logs by shift and then by the user-entered date.
         const shift1Groups = {};
         const shift2Groups = {};
         const shift3Groups = {};
@@ -265,15 +313,12 @@
           }
         });
 
-        // Generate table rows from grouped data.
         function generateRows(groups) {
           const rows = [];
-          // Sort dates in descending order.
           const dates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
           dates.forEach(dateKey => {
             const group = groups[dateKey];
             const avgMTTR = averageMTTR(group);
-            // Sort individual logs by timestamp (most recent first).
             group.sort((a, b) => b.timestamp - a.timestamp);
             group.forEach(log => {
               rows.push(`<tr>
@@ -301,11 +346,8 @@
         document.getElementById("shift3Body").innerHTML = shift3Rows.join("");
       });
     }
-
-    // Initial subscription (no date filter).
     subscribeStoppage();
 
-    /********* Date Range Filter Functionality *********/
     document.getElementById("applyDateFilter").addEventListener("click", () => {
       const startDateVal = document.getElementById("startDate").value;
       const endDateVal = document.getElementById("endDate").value;
@@ -324,7 +366,6 @@
       subscribeStoppage();
     });
 
-    /********* Toggle Functionality for Collapsible Shift Sections *********/
     document.querySelectorAll(".toggle-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const targetId = btn.getAttribute("data-target");
@@ -339,9 +380,7 @@
       });
     });
 
-    /********* PDF Download Functionality *********/
     document.getElementById("downloadPdf").addEventListener("click", () => {
-      // Expand all shift sections for PDF generation.
       document.querySelectorAll(".shift-content").forEach(div => {
         div.style.display = "block";
       });
@@ -354,7 +393,6 @@
       }).from(document.getElementById("stoppageData")).save();
     });
 
-    /********* Logout Functionality *********/
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.removeItem("machineStoppageLoggedIn");
       window.location.href = "index.html";
